@@ -39,7 +39,7 @@ document.getElementById("Dark").onclick = function (event) {
 
 
 }
-var river, floor, albero, directory, snake, duck, cloud, cloudsmall, sheep;
+var river, floor,satellite, directory, snake, duck, cloud, cloudsmall, sheep;
 var globalKeyPressed;
 var delta = 0;
 
@@ -241,49 +241,7 @@ class Game {
 
     }
 
-    //Creazione di un oggetto immagine "albero" nel workspace
-    createTrees() {
-
-        var trees =
-        {
-            scaleX: 30, /* Trees are 64*64.  */
-            scaleY: 30,
-
-            posXRight: 20,
-            posYRight: 15, /* + 32 = 64 / 2.  */
-            posZRight: 0
-        }
-        var scr = /* Screen dimensions.  */
-        {
-            w: window.innerWidth,
-            h: window.innerHeight
-        }
-
-        var i, tree;
-        var treeTexture = THREE.ImageUtils.loadTexture(albero);
-
-        var treeMaterial = new THREE.SpriteMaterial({
-            map: treeTexture,
-            useScreenCoordinates:
-                false
-        });
-
-        for (i = 0; trees.posZRight - (i * 200) > -scr.w; i++) {
-            //albero
-            tree = new THREE.Sprite(treeMaterial);
-            /* Use sprites so that
-             * the trees will
-             * always point to 
-             * the camera.  */
-
-            tree.position.set(trees.posXRight, trees.posYRight, trees.posZRight - (i * 400));
-            tree.scale.set(trees.scaleX, trees.scaleY, 1.0);
-            this.scene.add(tree);
-
-        }
-
-    }
-
+    
     //Creazione di un oggetto immagine nel workspace
     createSat() {
 
@@ -326,49 +284,7 @@ class Game {
         }
 
     }
-    //Creazione di un oggetto immagine nel workspace
-    createSkull() {
-
-        var skus =
-        {
-            scaleX: 40,
-            scaleY: 40,
-
-            posXRight: 14,
-            posYRight: 20, /* + 32 = 64 / 2.  */
-            posZRight: 0
-        }
-        var scr = /* Screen dimensions.  */
-        {
-            w: window.innerWidth,
-            h: window.innerHeight
-        }
-
-        var i, sku;
-        var skuTexture = THREE.ImageUtils.loadTexture(teschio);
-
-        var skuMaterial = new THREE.SpriteMaterial({
-            map: skuTexture,
-            useScreenCoordinates:
-                false
-        });
-
-        for (i = 0; skus.posZRight - (i * 200) > -scr.w; i++) {
-            //albero
-            sku = new THREE.Sprite(skuMaterial);
-            /* Use sprites so that
-             * the trees will
-             * always point to 
-             * the camera.  */
-
-            sku.position.set(skus.posXRight, skus.posYRight, skus.posZRight - (i * 1400));
-            sku.scale.set(skus.scaleX, skus.scaleY, 1.0);
-            this.scene.add(sku);
-
-        }
-
-    }
-
+    
 
     /* Function that creates the skybox with 512*512 size pictures.  */
     createSkyBox() {
@@ -403,11 +319,11 @@ class Game {
 
         this.scene.add(sky);
 
-        if (selectWorld == 0) game.createTrees();
+        if (selectWorld == 0) game.createSat();
 
         if (selectWorld == 1) game.createSat();
 
-        if (selectWorld == 2) game.createSkull();
+        if (selectWorld == 2) game.createSat();
 
 
     }
@@ -535,8 +451,8 @@ function chooseWorld(selection) {
         // landscape
         river = "textures/land/river.gif";
         floor = "textures/land/floor.jpg";
-        albero = "textures/land/tree.png";
         directory = "textures/land/";
+        satellite = "textures/mars/sat.png";
 
 
     }
@@ -552,7 +468,7 @@ function chooseWorld(selection) {
         river = "textures/dark/river.jpg";
         floor = "textures/dark/floor.jpg";
         directory = "textures/dark/";
-        teschio = "textures/dark/skull.png";
+        satellite = "textures/mars/sat.png";
     }
 }
 
