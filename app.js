@@ -166,6 +166,7 @@ class Game {
                     sound.play();
                 });
             }
+		//NOT USED
             if (song == 3) { //GAME OVER
                 audioLoader.load('sounds/gameover.mp3', function (buffer) {
                     sound.setBuffer(buffer);
