@@ -39,10 +39,11 @@ document.getElementById("Dark").onclick = function (event) {
 
 
 }
-var river, floor,satellite, directory, snake, duck, cloud, cloudsmall, sheep;
+var river, floor, albero, directory, snake, duck, cloud, cloudsmall, sheep;
 var globalKeyPressed;
 var delta = 0;
 
+var palmas, plant, cactus;
 
 class Game {
     constructor() {
@@ -61,7 +62,6 @@ class Game {
         */
         this.scene.background = new THREE.Color(0x00);    // Dark black background
 
-
         this.camera = new THREE.PerspectiveCamera(75, this.width / this.height, 0.1, 200);
         this.camera.lookAt(this.scene.position);
         this.camera.position.set(-10, 20, -25);
@@ -72,6 +72,7 @@ class Game {
         this.renderer.setSize(this.width, this.height);
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.renderer.shadowMapSoft = true;
 
         document.body.appendChild(this.renderer.domElement);
 
@@ -93,6 +94,7 @@ class Game {
     }
 
     addLights() {
+        
         var spotLight = new THREE.SpotLight(0xDDDDDD, 0.5);
         spotLight.castShadow = true;
 
@@ -100,13 +102,16 @@ class Game {
         spotLight.position.set(10, 40, -20);
         spotLight.shadow.mapSize.width = 512;  // default
         spotLight.shadow.mapSize.height = 512; // default
+        spotLight.shadow.camera.near = 500;
+        spotLight.shadow.camera.far = 4000;
+        spotLight.shadow.camera.fov = 30;
         this.scene.add(spotLight);
 
         // Helper
         // const slh = new THREE.SpotLightHelper(spotLight);
         /// this.scene.add(slh);
 
-        const light = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.9);
+        const light = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.4);
         this.scene.add(light);
 
         // const lh = new THREE.HemisphereLightHelper(light);
@@ -114,7 +119,12 @@ class Game {
 
         var directLight = new THREE.DirectionalLight(0xffffff, 0.8);
         directLight.castShadow = true;
-        directLight.position.set(10, 10, 10);
+        directLight.position.set(10,10,10);
+        directLight.shadow.mapSize.width = 512;  // default
+        directLight.shadow.mapSize.height = 512; // default
+        directLight.shadow.camera.near = 500;
+        directLight.shadow.camera.far = 4000;
+        directLight.shadow.camera.fov = 30;
         this.scene.add(directLight);
 
         // const dlh1 = new THREE.DirectionalLightHelper(directLight1);
@@ -241,7 +251,49 @@ class Game {
 
     }
 
-    
+    //Creazione di un oggetto immagine "albero" nel workspace
+    createTrees() {
+
+        var trees =
+        {
+            scaleX: 30, /* Trees are 64*64.  */
+            scaleY: 30,
+
+            posXRight: 20,
+            posYRight: 15, /* + 32 = 64 / 2.  */
+            posZRight: 0
+        }
+        var scr = /* Screen dimensions.  */
+        {
+            w: window.innerWidth,
+            h: window.innerHeight
+        }
+
+        var i, tree;
+        var treeTexture = THREE.ImageUtils.loadTexture(albero);
+
+        var treeMaterial = new THREE.SpriteMaterial({
+            map: treeTexture,
+            useScreenCoordinates:
+                false
+        });
+
+        for (i = 0; trees.posZRight - (i * 200) > -scr.w; i++) {
+            //albero
+            tree = new THREE.Sprite(treeMaterial);
+            /* Use sprites so that
+             * the trees will
+             * always point to 
+             * the camera.  */
+
+            tree.position.set(trees.posXRight, trees.posYRight, trees.posZRight - (i * 400));
+            tree.scale.set(trees.scaleX, trees.scaleY, 1.0);
+            this.scene.add(tree);
+
+        }
+
+    }
+
     //Creazione di un oggetto immagine nel workspace
     createSat() {
 
@@ -284,7 +336,49 @@ class Game {
         }
 
     }
-    
+    //Creazione di un oggetto immagine nel workspace
+    createSkull() {
+
+        var skus =
+        {
+            scaleX: 40,
+            scaleY: 40,
+
+            posXRight: 14,
+            posYRight: 20, /* + 32 = 64 / 2.  */
+            posZRight: 0
+        }
+        var scr = /* Screen dimensions.  */
+        {
+            w: window.innerWidth,
+            h: window.innerHeight
+        }
+
+        var i, sku;
+        var skuTexture = THREE.ImageUtils.loadTexture(teschio);
+
+        var skuMaterial = new THREE.SpriteMaterial({
+            map: skuTexture,
+            useScreenCoordinates:
+                false
+        });
+
+        for (i = 0; skus.posZRight - (i * 200) > -scr.w; i++) {
+            //albero
+            sku = new THREE.Sprite(skuMaterial);
+            /* Use sprites so that
+             * the trees will
+             * always point to 
+             * the camera.  */
+
+            sku.position.set(skus.posXRight, skus.posYRight, skus.posZRight - (i * 1400));
+            sku.scale.set(skus.scaleX, skus.scaleY, 1.0);
+            this.scene.add(sku);
+
+        }
+
+    }
+
 
     /* Function that creates the skybox with 512*512 size pictures.  */
     createSkyBox() {
@@ -319,11 +413,11 @@ class Game {
 
         this.scene.add(sky);
 
-        if (selectWorld == 0) game.createSat();
+        // if (selectWorld == 0) game.createTrees();
 
         if (selectWorld == 1) game.createSat();
 
-        if (selectWorld == 2) game.createSat();
+        // if (selectWorld == 2) game.createSkull();
 
 
     }
@@ -374,19 +468,28 @@ function main() {
     snake.addBlockEgg();
     snake.addBlockEgg();
 
-    egg = new Egg(new THREE.Vector3(randomPosition(25,-25), randomPosition(7,1), randomPosition(25,-25)));
+    egg = new Egg(new THREE.Vector3(0, 2, 10));
     egg.build();
 
-    duck = new Duck(new THREE.Vector3(randomPosition(25,-25), randomPosition(7,1), randomPosition(25,-25)));
+    duck = new Duck(new THREE.Vector3(20, 2, 20));
     duck.build();
 
-    sheep = new Sheep(new THREE.Vector3(randomPosition(25,-25), randomPosition(7,1), randomPosition(25,-25)));
+    sheep = new Sheep(new THREE.Vector3(0, 2, -20));
     sheep.build();
 
     cloud = new Cloud(new THREE.Vector3(0, 12, 0));
     cloud.build();
     cloudsmall = new Cloudsmall(new THREE.Vector3(0, 12, 0));
     cloudsmall.build();
+
+    palmas = new Palmas(new THREE.Vector3(-15, 4, 15));
+    palmas.build();
+
+    plant = new Plant(new THREE.Vector3(15, 4, -15));
+    plant.build();
+
+    cactus = new Cactus(new THREE.Vector3(15, 4, 15));
+    cactus.build();
 
     game.animate();
 }
@@ -428,6 +531,10 @@ var updateFunction = function () {
     sheep.update();
     cloud.update();
     cloudsmall.update();
+    
+    palmas.update();
+    plant.update();
+    cactus.update();
 
 
     gameOver();
@@ -451,8 +558,8 @@ function chooseWorld(selection) {
         // landscape
         river = "textures/land/river.gif";
         floor = "textures/land/floor.jpg";
+        albero = "textures/land/tree.png";
         directory = "textures/land/";
-        satellite = "textures/mars/sat.png";
 
 
     }
@@ -468,7 +575,7 @@ function chooseWorld(selection) {
         river = "textures/dark/river.jpg";
         floor = "textures/dark/floor.jpg";
         directory = "textures/dark/";
-        satellite = "textures/mars/sat.png";
+        teschio = "textures/dark/skull.png";
     }
 }
 
@@ -484,8 +591,8 @@ function setTitles() {
     document.getElementById("intro-mars").style.visibility = 'hidden';
     document.getElementById("Score").style.visibility = 'visible';
     document.getElementById("Length").style.visibility = 'visible';
-
-    if (musicOn == true) document.getElementById("Music").style.visibility = 'visible';
+    
+    document.getElementById("Music").style.visibility = 'visible';
 
 }
 
@@ -499,7 +606,7 @@ function restart() {
     location.reload();
 }
 
-function randomPosition(max, min) {
-    return (Math.random() * (max - min) + min);
+function randomPosition(max,min){
+    return ( Math.random() * (max - min) + min ) ;
 }
 
