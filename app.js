@@ -488,7 +488,7 @@ function main() {
     plant = new Plant(new THREE.Vector3(15, 4, -15));
     plant.build();
 
-    cactus = new Cactus(new THREE.Vector3(15, 8, 15));
+    cactus = new Cactus(new THREE.Vector3(15, 0, 15));
     cactus.build();
 
     game.animate();
